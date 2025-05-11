@@ -1,19 +1,20 @@
 import React, { useRef } from 'react'
 
-const ChatForm = () => {
+const ChatForm = ({setChatHistory}) => {
 
    const inputRef = useRef()
   
   const handleFormSubmit = (e) => {
    e.preventDefault();
+
    const userMessage = inputRef.current.value.trim();
 
    if(!userMessage) return;
 
    inputRef.current.value = '';
 
-   console.log(userMessage)
-
+   // update chat history with user's message
+   setChatHistory(oldMessages => [...oldMessages, {role: "user", text: userMessage}])
   }
 
 
