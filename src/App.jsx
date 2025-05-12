@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ChatbotIcon from './components/ChatbotIcon'
 import ChatForm from './components/ChatForm'
 import ChatMessage from './components/ChatMessage'
@@ -6,6 +6,7 @@ import ChatMessage from './components/ChatMessage'
 const App = () => {
 
   const [chatHistory, setChatHistory] = useState([])
+  const chatBodyRef = useRef()
 
   const generateBotResponse = async (history) => {
 
@@ -33,7 +34,7 @@ const App = () => {
       if(!response.ok) throw new Error(data.error.message || 'Something went wrong')
 
       // update the chat history with the bot's response
-      const apiResponseText = data.candidates[0].contents.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1").trim()
+      const apiResponseText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1").trim()
 
       updateHistory(apiResponseText)
     } catch(error) {
@@ -41,6 +42,13 @@ const App = () => {
 
     }
   }
+
+  useEffect(() => {
+    // auto-scroll to the bottom of the chat body when it updates
+    chatBodyRef.current.scrollTo({top: chatBodyRef.current.scrollHeight, behavior: "smooth"})
+  }, [chatHistory])
+
+  
 
   return (
     <div className='container'>
@@ -56,7 +64,7 @@ const App = () => {
         </div>
 
         {/* chatbot body */}
-        <div className="chat-body">
+        <div ref={chatBodyRef} className="chat-body">
           <div className="message bot-message">
             <ChatbotIcon />
             <p className="message-text">
