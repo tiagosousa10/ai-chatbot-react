@@ -15,7 +15,11 @@ const ChatForm = ({setChatHistory}) => {
 
    // update chat history with user's message
    setChatHistory(oldMessages => [...oldMessages, {role: "user", text: userMessage}])
-  }
+
+   // add a "Thinking ..." placeholder for the bot's message
+   setTimeout(() => setChatHistory((history) => [...history, {role: "model", text: "Thinking..."}]),600 )
+
+}
 
 
    return (
