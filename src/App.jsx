@@ -6,6 +6,7 @@ import ChatMessage from './components/ChatMessage'
 const App = () => {
 
   const [chatHistory, setChatHistory] = useState([])
+  const [showChatbot, setShowChatbot] = useState(false)
   const chatBodyRef = useRef()
 
   const generateBotResponse = async (history) => {
@@ -17,7 +18,7 @@ const App = () => {
 
     // format the chat history for API request
     history = history.map(({role, text}) => ({role, parts: [{text}]}))
-
+    
     const resquestOptions = {
       method: "POST",
       headers: {
@@ -48,12 +49,16 @@ const App = () => {
     chatBodyRef.current.scrollTo({top: chatBodyRef.current.scrollHeight, behavior: "smooth"})
   }, [chatHistory])
 
-  
+
 
   return (
-    <div className='container'>
-      <div className="chatbot-popup">
+    <div className={`container ${showChatbot ? "show-chatbot" : ""}`}>
+      <button onClick={() => setShowChatbot(oldState => !oldState)} id="chatbot-toggler">
+        <span className='material-symbols-rounded'>mode_comment</span>
+        <span className='material-symbols-rounded'>close</span>
+      </button>
 
+      <div className="chatbot-popup">
         {/* Chatbot Header */}
         <div className="chat-header">
           <div className="header-info">
