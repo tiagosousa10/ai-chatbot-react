@@ -12,8 +12,8 @@ const App = () => {
   const generateBotResponse = async (history) => {
 
     //helper function to update chat history
-    const updateHistory = (text) => {
-      setChatHistory(oldHistory => [...oldHistory.filter(message => message.text !== "Thinking..."), {role: "model", text}])
+    const updateHistory = (text, isError = false) => {
+      setChatHistory(oldHistory => [...oldHistory.filter(message => message.text !== "Thinking..."), {role: "model", text, isError}])
     }
 
     // format the chat history for API request
@@ -38,9 +38,10 @@ const App = () => {
       const apiResponseText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1").trim()
 
       updateHistory(apiResponseText)
+
     } catch(error) {
       console.log("🚀 ~ generateBotResponse ~ error:", error)
-
+      updateHistory(error.message, true)
     }
   }
 
@@ -65,7 +66,9 @@ const App = () => {
             <ChatbotIcon />
             <h2 className="logo-text">Chatbot</h2>
           </div>
-          <button className='material-symbols-rounded'>keyboard_arrow_down</button>
+          <button
+            onClick={() => setShowChatbot(oldState => !oldState)}
+            className='material-symbols-rounded'>keyboard_arrow_down</button>
         </div>
 
         {/* chatbot body */}
